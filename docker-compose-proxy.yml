@@ -1,0 +1,88 @@
+version: "3.7"
+
+services:
+  app:
+    container_name: appfarkito
+    build:
+      context: .
+    volumes:
+      - ./app:/app
+      - static_data:/vol/web
+    environment:
+      - DB_HOST=db
+      - DB_NAME=app
+      - DB_USER=postgres
+      - DB_PASS=supersecretpassword
+      - ALLOWED_HOSTS=localhost,api.dev.farkito.com,farkitoproxy
+      - CORS_ALLOW_ALL_ORIGINS=1
+      - DEBUG=1
+      - POPULATE_DATA=1
+      - S3_STORAGE_BACKEND=0
+      - ENVIRONMENT=stagging
+      - CUSTOMER_NUMBER_TO_POPULATE=4
+      - RESTAURENT_OWNER_NUMBER_TO_POPULATE=4
+      - RESTAURENT_NUMBER_TO_POPULATE=5
+      - MEALS_NUMBER_TO_POPULATE=10
+    depends_on:
+      - db
+
+  proxy:
+    user: root
+    container_name: farkitoproxy
+    image: proxy:latest
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - static_data:/vol/static
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  
+  db:
+    container_name: dbfarkito
+    image: postgres:10-alpine
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=supersecretpassword
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    restart: 'no'
+    volumes:
+      - prometheus_data:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    depends_on:
+      - app
+  
+  grafana:
+    image: grafana/grafana
+    environment:
+      GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource"
+    restart: 'no'
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - 3000:3000
+    depends_on:
+      - prometheus
+      - app
+
+volumes:
+  static_data:
+  prometheus_data: {}
+  grafana_data: {}
+

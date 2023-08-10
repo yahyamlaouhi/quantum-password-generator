@@ -1,0 +1,64 @@
+from django.shortcuts import render
+import qiskit
+from qiskit import QuantumCircuit, Aer, transpile, assemble
+import numpy as np
+import qiskit
+from qiskit import QuantumCircuit
+from qiskit.visualization import circuit_drawer
+import io
+import matplotlib.pyplot as plt
+import base64
+
+def generate_random_password(request):
+
+    # Define the number of qubits for the quantum register
+    num_qubits = 5
+
+    # Create a quantum circuit with the specified number of qubits
+    quantum_circuit = QuantumCircuit(num_qubits)
+
+    # Apply Hadamard gate to each qubit to create superposition
+    for qubit in range(num_qubits):
+        quantum_circuit.h(qubit)
+
+    quantum_circuit.draw(output='mpl')
+
+    # Measure the qubits
+    quantum_circuit.measure_all()
+
+    # Simulate the quantum circuit to generate random numbers
+    simulator = Aer.get_backend('aer_simulator')
+    compiled_circuit = transpile(quantum_circuit, simulator)
+    job = simulator.run(assemble(compiled_circuit))
+    result = job.result()
+    counts = result.get_counts()
+
+    # Convert the counts to a random number
+    random_number = int(max(counts, key=counts.get), 2)
+
+    # Generate a password based on the random number and user specifications
+    def generate_password(length):
+        characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?"
+        password = ''.join(np.random.choice(list(characters), length))
+        return password
+
+    # User-defined password length
+    password_length = 30
+
+    # Generate the password
+    password = generate_password(password_length)
+
+    # Print the random number and generated password
+    print("Random Number:", random_number)
+    print("Generated Password:", password)
+    quantum_circuit.draw(output='mpl')
+
+    qc_image = io.BytesIO()
+    circuit_drawer(quantum_circuit, output='mpl', scale=0.5).savefig(qc_image, format='png')
+    encoded_image = base64.b64encode(qc_image.getvalue()).decode('utf-8')
+
+
+   
+    # Pass the image data to the template
+    context = {'qc_image': encoded_image,"Random Number:": random_number,"Generated Password:": password}
+    return render(request, 'ind.html', context)

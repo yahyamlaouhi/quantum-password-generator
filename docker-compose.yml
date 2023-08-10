@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  app:
+    container_name: appquantum
+    build:
+      context: .
+    ports:
+      - "7000:7000"
+    volumes:
+      - ./app:/app
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:7000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=app
+      - DB_USER=postgres
+      - DB_PASS=supersecretpassword
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+      - CORS_ALLOW_ALL_ORIGINS=1
+      - DEBUG=1
+      - POPULATE_DATA= 1
+      - S3_STORAGE_BACKEND=0
+      - ENVIRONMENT=stagging
+    depends_on:
+      - db
+  
+  db:
+    container_name: appquantumdb
+    image: postgres:10-alpine
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=supersecretpassword
+
+volumes:
+  static_data:
