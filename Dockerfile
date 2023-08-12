@@ -1,17 +1,19 @@
-FROM python:3.9-alpine
+FROM python:3.8
 LABEL maintainer="pquantum"
 
 ENV PYTHONUNBUFFERED 1
 
+
 RUN pip install --upgrade pip
+RUN pip install --upgrade setuptools
 
 COPY ./requirements.txt /requirements.txt
-RUN apk add --update --no-cache postgresql-client jpeg-dev
-RUN apk add --update --no-cache --virtual .tmp-build-deps \
-			gcc libc-dev linux-headers postgresql-dev musl-dev zlib zlib-dev
-RUN apk add --no-cache build-base libcurl curl-dev
+# RUN apk add --update --no-cache postgresql-client jpeg-dev
+# RUN apk add --update --no-cache --virtual .tmp-build-deps \
+# 			gcc libc-dev linux-headers postgresql-dev musl-dev zlib zlib-dev
+# RUN apk add --no-cache build-base libcurl curl-dev
 RUN pip install -r /requirements.txt
-RUN apk del .tmp-build-deps
+# RUN apk del .tmp-build-deps
 
 RUN  mkdir /app
 WORKDIR /app
@@ -19,10 +21,10 @@ COPY ./app /app
 
 RUN mkdir -p /vol/web/media
 RUN mkdir -p /vol/web/static
-RUN adduser -D user
-RUN chown -R user:user /vol/
+RUN /bin/sh
+# RUN adduser -D user
+# RUN chown -R user:user /vol/
 RUN chmod -R 755 /vol/web
-USER user
+# USER user
 
 VOLUME /vol/web
-CMD ["entrypoint.sh"]

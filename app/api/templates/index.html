@@ -1,11 +1,151 @@
-<!-- template.html -->
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Quantum Circuit Visualization</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Quantum Password Generator</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+         
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #EDEDED;
+        }
+        .header {
+            background-color: #232323;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            width: 60%;
+            margin: auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+            border-radius: 10px;
+        }
+        .logo {
+            float: right;
+            width: 50px;
+            height: 50px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .btn-generate {
+            background-color: #FF4136;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        /* Add gray line style */
+        .gray-line {
+            border-top: 1px solid #ccc;
+            margin: 20px 0;
+            padding-top: 20px;
+        }
+        /* Flex container for password, circuit, and plot */
+        .flex-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .password-box {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .copy-button {
+            background-color: #28A745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .btn-result {
+            float: right;
+            margin-top: 10px;
+
+        }
+    </style>
 </head>
 <body>
-    <h1>Quantum Circuit Visualization</h1>
-    <img src="data:image/png;base64,{{ qc_image}}">
+    <div class="header">
+        <img src="qiskit_logo.png" alt="Qiskit Logo" class="logo">
+        <h1>Quantum Password Generator</h1>
+    </div>
+    <div class="container rounded">
+        <form action = "" method = "post" id="passwordForm" >
+                {% csrf_token %}
+                {{ form.as_p }}
+
+            <button class="btn btn-danger btn-generate"  type="submit" >Generate Password</button>
+            <button class="btn btn-success btn-result" onclick="generatePassword()" type="button" >Result</button>
+
+        </form>
+
+    </div>
+    
+    <div class="container rounded mt-4" id="passwordContainer" style="display: none;">
+    <div class="password-box">
+        <h2 style="font-family: monospace;" id="generatedPassword"></h2>
+        <button class="copy-button" onclick="copyPassword()">Copy</button>
+    </div>
+    <div class="password-box">
+        <h3>Quantum Circuit:</h3>
+        <img id="circuitImage" src="" alt="Quantum Circuit" style="max-width: 100%;">
+    </div>
+    <div class="password-box plot-box">
+        <h3>Plotly Visualization:</h3>
+        <div id="plotlyContainer"></div>
+    </div>
+</div>    <script>
+
+        function copyPassword() {
+            var passwordText = document.getElementById("generatedPassword");
+            var password = passwordText.textContent;
+            
+            var tempInput = document.createElement("input");
+            tempInput.value = password;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+        }
+
+        function generatePassword() {
+            // JavaScript code to generate password (you can use your existing logic here)
+            // For example:
+
+            var password = "{{Generated_Password}}";
+    
+            // Display the generated password
+            document.getElementById("generatedPassword").textContent = password;
+    
+            // Show the password container
+            document.getElementById("passwordContainer").style.display = "block";
+    
+            // Update the circuit image source (replace with actual image source)
+            document.getElementById("circuitImage").src = "data:image/png;base64,{{ Qc_image}}";
+    
+            // Create Plotly visualization (replace with your Plotly chart creation code)
+            var data = [
+                {
+                    x: [1, 2, 3, 4],
+                    y: [10, 11, 12, 13],
+                    type: 'scatter'
+                }
+            ];
+            var layout = {
+                title: 'Plotly Visualization'
+            };
+            Plotly.newPlot('plotlyContainer', data, layout); // Use 'plotlyContainer' as the target element ID
+        }
+       
+        
+    </script>
 </body>
 </html>

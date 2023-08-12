@@ -16,7 +16,7 @@ services:
       - DB_NAME=app
       - DB_USER=postgres
       - DB_PASS=supersecretpassword
-      - ALLOWED_HOSTS=localhost,127.0.0.1
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
       - CORS_ALLOW_ALL_ORIGINS=1
       - DEBUG=1
       - POPULATE_DATA= 1

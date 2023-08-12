@@ -1,17 +1,15 @@
 Django==3.2
 djangorestframework>=3.12.0,<3.13.0
-psycopg2>=2.9.0,<2.9.2
-Pillow>=8.3.0,<8.4.0
-uwsgi>=2.0.18,<2.1.0
-boto3>=1.20.0,<1.20.26
+psycopg2>=2.9.0
+Pillow>=8.3.0
+uwsgi>=2.0.18
+boto3>=1.20.0
 django-storages>=1.12.0,<1.12.3
-django-cors-headers>=3.9.0,<3.10.1
-
-
+django-cors-headers>=3.9.0
 qiskit
-pylatexenc
 qiskit-aer
 qiskit-ibmq-provider
+pylatexenc
 matplotlib
 
 flake8>=3.9.0,<4.0.1
