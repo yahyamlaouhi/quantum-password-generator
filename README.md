@@ -1,250 +1,65 @@
-# Project Name
-Farkito api
+# Quantum Password Generator App
 
-## Table of Contents
-* [Features](#features)
-* [Setup](#setup)
-* [Usage](#usage)
-* [Acknowledgements](#acknowledgements)
+The Quantum Password Generator is an application that leverages quantum computing principles to create secure and unpredictable passwords. This project combines the power of Python, Django, and the Qiskit quantum python library to generate robust passwords that are difficult to predict.
 
-# Features
-## Filters
-- Filter feature for restaurent 
-- Filter feature for order
-- Filter feature for food
-- Filter feature for geolocation
-## KPI
-- KPI information
+## Setup
 
-## Payment
-- Payment information
+To set up and run the Quantum Password Generator app using Docker, follow these steps:
 
-## Favourite restaurent and meal
-- favourite meals and restaurents for every customer
+1. **Clone the Repository:**
 
-## Reset Password
-- every customer or restaurent owner can change their password using mail
+    Clone this repository to your local machine using the following command:
 
+    ```bash
+    git clone https://github.com/yahyamlaouhi/quantum-password-generator.git
+    cd quantum-password-generator
+    ```
 
+2. **Build the Docker Image:**
 
+    Build the Docker image for the app by running the following command:
 
-## Update restaurent-owner
+    ```bash
+    docker-compose build --no-cache
+    ```
 
+3. **Run Database Migrations:**
 
+    Apply the database migrations to set up the necessary database schema:
 
-# Setup
-$ docker-compose build --no-cache
+    ```bash
+    docker-compose run app sh -c "python manage.py makemigrations"
+    docker-compose run app sh -c "python manage.py migrate"
+    ```
 
-$ docker-compose run app sh -c "python manage.py makemigrations"
+5. **Run the Application:**
 
-$ docker-compose run app sh -c "python manage.py migrate"
+    Finally, start the application using Docker Compose:
 
-$ docker-compose run app sh -c "python manage.py populate_restaurent"
+    ```bash
+    docker-compose up
+    ```
 
+    The app should now be accessible at http://localhost:8000/.
 
-# Usage
+## Usage
 
-## Filters
+1. **Generate Quantum Passwords:**
 
-## API introduction
-This application use Django framework with django-filter package.
+    Navigate to the password generation section of the app and provide the required input parameters. The Quantum Password Generator will use the Qiskit library to create a secure password that utilizes quantum randomness.
 
-## Routes about Filter
-### restaurent filter
-GET | /api/restaurent/restaurents/
+2. **Explore the App:**
 
-Params : 
-* name: string
-* name__contains:string
-* categories__name:string
-* categories__name__contains=string
-* uuid:string
-* is_active:boolean
-* is_open:boolean
-* have_delivery:boolean
-* have_takeaway:boolean
-* have_onsite:boolean
-* accept_cash:boolean
-* accept_card:boolean
-* owner:int
-* created_at__gt:date
-* created_at__lt:date
-* table_number__gt:int
-* table_number__lt:int
-* capacity__gt:int
-* capacity__lt:int
-* telephone:string
-* reviews__rating__gt:float
-* reviews__rating__lt:float
+    The app also features a restaurant recommendation feature (populated with sample data) to showcase the broader functionality of the Django application.
 
-Id:nothing
+## Contributions and Issues
 
-return: json response with status 200
+If you encounter any issues with the app or would like to contribute to its development, feel free to submit issues and pull requests on the GitHub repository: [Quantum Password Generator Repository](https://github.com/yourusername/quantum-password-generator).
 
-remarks: gt and lt means greater than and lesser than  
+## Credits
 
-Exemple of URL: /api/restaurent/restaurents/?name=Pottier+S.A.R.L.&categories__name=Mexican&uuid=0faceb42-43e7-4343-b3c5-cdfb994f43d7&is_active=true&is_open=true&have_delivery=false&have_takeaway=false&have_onsite=false&accept_cash=true&accept_card=true&owner=&created_at__gt=2022-09-26T13%3A01%3A38.687096Z&created_at__lt=2022-09-28T13%3A01%3A38.687096Z&table_number__gt=20&table_number__lt=26&capacity__gt=30&capacity__lt=67&telephone=0381818145&reviews__rating__gt=2.0&reviews__rating__lt=4/restaurent/restaurents/?name=Pottier+S.A.R.L.&categories__name=Mexican&uuid=0faceb42-43e7-4343-b3c5-cdfb994f43d7&is_active=true&is_open=true&have_delivery=false&have_takeaway=false&have_onsite=false&accept_cash=true&accept_card=true&owner=&created_at__gt=2022-09-26T13%3A01%3A38.687096Z&created_at__lt=2022-09-28T13%3A01%3A38.687096Z&table_number__gt=20&table_number__lt=26&capacity__gt=30&capacity__lt=67&telephone=0381818145&reviews__rating__gt=2.0&reviews__rating__lt=4
+This project was developed as a demonstration by Yahya Mlaouhi. It utilizes the Django framework and Qiskit quantum python library to showcase the capabilities of quantum password generation.
 
-### order filter
-GET | /api/order/orders/
+## License
 
-Params : 
-* uuid:string
-* restaurent__uuid: string
-* customer:int
-* status:boolean
-* billing_status:boolean
-* total_paid:int
-* order_key:string
-* order_key__contains:string
-* created_at__gt:date
-* created_at__lt:date
-* phone_number:string
-* date_time__gt:date
-* date_time__lt:date
-
-
-Id:nothing
-
-return: json response with status 200
-
-remarks: gt and lt means greater than and lesser than  
-
-Exemple of URL: /api/order/orders/?restaurent__uuid=7adb66ac-5b03-47c1-9111-00d710fcfe5a&uuid=6ed87f1f-b9dc-45b1-93d4-f99f12e6471c&customer=9&phone_number=%2B21658741196&created_at__gt=2022-10-18T07%3A29%3A51.302791Z&created_at__lt=2022-10-20T07%3A29%3A51.302791Z&total_paid=35&service=&order_key=POSDSDERWE&billing_status=&status=&date_time__gt=&date_time__lt=
-
-
-### meal filter
-GET | /api/food/meal/
-
-Params : 
-* name:string
-* categories__name: string
-* categories__name__contains:string
-* rating__gt:int
-* rating__lt:int
-* regular_price__gt:int
-* regular_price__lt:int
-* discount__gt:int
-* discount__lt:int
-* created_at__lt:date
-* created_at__gt:date
-* is_available:boolean
-* ingredients__name:string
-* ingredients__name__contains:string
-* restaurent__uuid:string
-* is_active
-
-Id:nothing
-
-return: json response with status 200
-
-remarks: gt and lt means greater than and lesser than  
-
-Exemple of URL: /api/food/meal/?categories__name=Fish&name=Caesar+Salad&rating__gt=1&rating__lt=4&regular_price__gt=20&regular_price__lt=30&discount__gt=11&discount__lt=40&is_available=true&ingredients__name=Salmon&restaurent__uuid=7a738b62-d59b-430c-b598-1812bcd01578&is_active=true
-
-### geolocation filter
-GET | /api/restaurent/restaurents/
-
-Params : 
-* latitude:float
-* longitude:float
-* radius:float
-
-Id:nothing
-
-return: json response with status 200
-
-Exemple of URL: /api/restaurent/restaurents/?latitude=36.1678&longitude=10.1765&radius=1.0
-
-## Update restaurent-owner
-put| /api/user/update-owner/identifier/
-Id:nothing
-params:nothing
-
-
-## KPI
-GET | /api/order/kpi/
-
-Params : nothing 
-
-Id:nothing
-
-return: json response with status 200
-
-
-## Payment
-- POST | /api/payments/
-
-Params : nothing 
-
-Id:nothing
-
-return: json response with status 200 with json reponse of payment-url and payment-ref
-
-- GET | /api/payments/
-
-Params : 
-
-- payment_ref:slug
-
-Id:nothing
-
-
-return: json response with status 200 and information about the payment
-
-- GET | /api/payments/orders
-
-Params : nothing 
-
-Id:nothing
-
-return: json response with status 200 with all the payment orders
-
-
-## Favourite restaurent and meal
-
-- GET | /api/restaurent/restaurents/favourites/
-
-Params : nothing 
-
-Id:nothing
-
-return: json response with status 200
-
-
-- GET | /api/food/meal/favourites/
-
-Params : nothing 
-
-Id:nothing
-
-return: json response with status 200
-
-
-
-## Reset password
-
-- POST | /api/rest-auth/password/reset/
-
-Params : nothing 
-
-Id:nothing
-
-body:
-- email
-
-return: json response with status 200 with json reponse "the email has been sent"
-
-
-## restaurent-with-meals
--Render same restaurent page with meals
-
-
-# Usage
-
-Exemple of URL: /api/restaurent/restaurents/?latitude=36.1678&longitude=10.1765&radius=1.0
-
-## restaurent-with-meals
-GET |  /api/restaurent/restaurents-meals/
- 
-remark:you can use filter on it
+This project is licensed under the [MIT License](LICENSE).
